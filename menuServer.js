@@ -25,38 +25,6 @@ function htmlify(menuData) {
     return result;
 };
 
-// app.get('/menu/downstairs', function(req, res){
-//
-//   url = 'http://atrium.bebysodexo.com/be/menuplan.html';
-//
-//   var loadMenuPromise = new Promise(function(resolve, reject) {
-//     request(url, function(error, response, html) {
-//       if (!error) {
-//         var $ = cheerio.load(html, {normalizeWhitespace: true});
-//         var menu = {
-//           date: "",
-//           items: []
-//         }
-//
-//         $('.planright').filter(function() {
-//           var data = $(this);
-//           menu.date = data.children().first().text();
-//
-//           data.children('p').each( function(i, elem) {
-//             menu.items.push($(this).text().trim());
-//           });
-//
-//           resolve(menu);
-//         })
-//       }
-//
-//     });
-//   });
-//
-//   loadMenuPromise.then(function(value) {
-//     res.send(htmlify(value));
-//   });
-// });
 var downstairsScraper = function(req, res){
 
   url = 'http://atrium.bebysodexo.com/be/menuplan.html';
@@ -86,7 +54,9 @@ var downstairsScraper = function(req, res){
   });
 
   loadMenuPromise.then(function(value) {
+    res.header("Access-Control-Allow-Origin", req.headers.origin);
     res.send(htmlify(value));
+    next();
   });
 };
 
@@ -97,20 +67,13 @@ var menuServices = [
   }
 ];
 
-app.all('/menu', function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
-  next();
- });
-
 // load menus
 var menus = "<div class='menus'><ul>";
 for (var menuIndex in menuServices) {
     var ms = menuServices[menuIndex];
 
-    app.all('/menu'.concat(ms.name), function(req, res, next) {
-      res.header("Access-Control-Allow-Origin", "*");
-      res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    app.all('/menu/'.concat(ms.name), function(req, res, next) {
+      res.header("Access-Control-Allow-Origin", req.headers.origin);
       next();
     });
 
@@ -119,10 +82,18 @@ for (var menuIndex in menuServices) {
 }
 menus = menus.concat("</ul></div>")
 
+app.all('/menu', function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", req.headers.origin);
+  next();
+ });
+
 app.get('/menu', function(req, res) {
+  res.header("Access-Control-Allow-Origin", req.headers.origin);
   res.send(menus);
+  next();
 });
 
 app.listen('8089')
 console.log('Menus are served on port 8089.');
 exports = module.exports = app;
+
