@@ -97,10 +97,23 @@ var menuServices = [
   }
 ];
 
+app.all('/menu', function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next();
+ });
+
 // load menus
 var menus = "<div class='menus'><ul>";
 for (var menuIndex in menuServices) {
     var ms = menuServices[menuIndex];
+
+    app.all('/menu'.concat(ms.name), function(req, res, next) {
+      res.header("Access-Control-Allow-Origin", "*");
+      res.header("Access-Control-Allow-Headers", "X-Requested-With");
+      next();
+    });
+
     app.get('/menu/'.concat(ms.name), ms.scraper);
     menus = menus.concat("<li><a href='/menu/", ms.name, "'>", ms.name, "</a></li>");
 }
