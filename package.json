@@ -1,0 +1,12 @@
+{
+  "name"         : "server.menu",
+  "version"      : "1.0",
+  "description"  : "Scrapping the Web.",
+  "main"         : "menuServer.js",
+  "author"       : "Roozbeh Farahbod",
+  "dependencies" : {
+    "express"    : "latest",
+    "request"    : "latest",
+    "cheerio"    : "latest"
+  }
+}
