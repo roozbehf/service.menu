@@ -1,6 +1,6 @@
 {
   "name"         : "server.menu",
-  "version"      : "1.0",
+  "version"      : "0.1.0",
   "description"  : "Scrapping the Web.",
   "main"         : "menuServer.js",
   "author"       : "Roozbeh Farahbod",
